@@ -35,9 +35,7 @@ services:
   # Backend - FastAPI
   # ===================
   backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
+    image: ghcr.io/ahmeddamouad/your_ai_lawyer-backend:latest
     container_name: legal-backend
     environment:
       - OLLAMA_HOST=http://ollama:11434
@@ -60,9 +58,7 @@ services:
   # Frontend - React/Nginx
   # ===================
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ghcr.io/ahmeddamouad/your_ai_lawyer-frontend:latest
     container_name: legal-frontend
     ports:
       - "8001:80"

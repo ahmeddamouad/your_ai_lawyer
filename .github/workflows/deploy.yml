@@ -1,0 +1,55 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  PROJECT_PATH: /opt/moroccan-legal-ai
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Azure VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          password: ${{ secrets.VM_PASSWORD }}
+          script: |
+            echo "=== Deploying Moroccan Legal AI Chatbot ==="
+
+            # Navigate to project
+            cd ${{ env.PROJECT_PATH }}
+
+            # Pull latest code
+            echo "Pulling latest code..."
+            git pull origin main
+
+            # Stop existing containers
+            echo "Stopping containers..."
+            docker-compose down
+
+            # Rebuild and start
+            echo "Building and starting containers..."
+            docker-compose build --no-cache backend frontend
+            docker-compose up -d
+
+            # Wait for services to start
+            sleep 10
+
+            # Show status
+            echo "=== Container Status ==="
+            docker-compose ps
+
+            # Show recent logs
+            echo "=== Recent Logs ==="
+            docker-compose logs --tail=30
+
+            echo "=== Deployment Complete ==="

@@ -1,0 +1,3 @@
+# Prompts module
+from .legal_fr import PROMPT_FR, PROMPT_FR_WITH_HISTORY, SYSTEM_PROMPT_FR
+from .legal_ar import PROMPT_AR, PROMPT_AR_WITH_HISTORY, SYSTEM_PROMPT_AR

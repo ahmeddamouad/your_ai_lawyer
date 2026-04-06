@@ -1,0 +1,33 @@
+# Backend Requirements
+# Moroccan Legal AI Chatbot
+
+# FastAPI
+fastapi==0.115.7
+uvicorn==0.34.0
+pydantic==2.10.6
+pydantic-settings==2.7.1
+python-multipart==0.0.9
+
+# LangChain & RAG
+langchain==0.2.16
+langchain-community==0.2.16
+langchain-core==0.2.39
+langchain-text-splitters==0.2.4
+
+# Vector Database
+chromadb==0.6.3
+
+# Ollama
+# (langchain-community includes Ollama support)
+
+# Document Processing
+pypdf==5.1.0
+
+# Utilities
+python-dotenv==1.0.1
+aiofiles==23.2.1
+
+# Testing
+pytest==8.3.4
+pytest-asyncio==0.24.0
+httpx==0.28.1

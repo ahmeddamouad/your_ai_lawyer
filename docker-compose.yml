@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # ===================
+  # Ollama - LLM Server
+  # ===================
+  ollama:
+    image: ollama/ollama:latest
+    container_name: legal-ollama
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+    # Uncomment for GPU support (NVIDIA)
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  # ===================
+  # Backend - FastAPI
+  # ===================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: legal-backend
+    environment:
+      - OLLAMA_HOST=http://ollama:11434
+      - LLM_MODEL=mistral
+      - EMBEDDING_MODEL=nomic-embed-text
+      - CHROMA_PATH=/app/chroma
+      - DATA_PATH=/app/data/legal_pdfs
+      - CORS_ORIGINS=["http://localhost","http://localhost:80","http://frontend"]
+    volumes:
+      - ./chroma:/app/chroma
+      - ./data:/app/data
+    ports:
+      - "8000:8000"
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ===================
+  # Frontend - React/Nginx
+  # ===================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: legal-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ===================
+  # Model Initialization
+  # ===================
+  model-init:
+    image: ollama/ollama:latest
+    container_name: legal-model-init
+    volumes:
+      - ollama_data:/root/.ollama
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        echo "Waiting for Ollama to be ready..."
+        sleep 10
+        echo "Pulling Mistral model..."
+        ollama pull mistral
+        echo "Pulling embedding model..."
+        ollama pull nomic-embed-text
+        echo "Models downloaded successfully!"
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: "no"
+
+volumes:
+  ollama_data:
+
+networks:
+  default:
+    name: legal-network

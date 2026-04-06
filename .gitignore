@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.env
+*.egg-info/
+dist/
+build/
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Data and databases
+data/legal_pdfs/
+chroma/
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Logs
+*.log
+logs/
+
+# Secrets
+.env
+.env.local
+.env.*.local
+secrets.json
+
+# Build outputs
+frontend/dist/
+backend/__pycache__/
+
+# Test
+.coverage
+htmlcov/
+.pytest_cache/

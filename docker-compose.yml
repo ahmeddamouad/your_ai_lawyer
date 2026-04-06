@@ -65,7 +65,7 @@ services:
       dockerfile: Dockerfile
     container_name: legal-frontend
     ports:
-      - "80:80"
+      - "8001:80"
     depends_on:
       - backend
     restart: unless-stopped

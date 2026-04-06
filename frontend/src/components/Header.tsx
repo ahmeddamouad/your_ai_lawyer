@@ -2,7 +2,7 @@
  * Header component with logo and language toggle
  */
 import { Languages, Scale } from 'lucide-react';
-import { Language } from '../../types';
+import { Language } from '../types';
 
 interface HeaderProps {
   language: Language;

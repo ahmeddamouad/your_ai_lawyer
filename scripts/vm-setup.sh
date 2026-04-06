@@ -23,7 +23,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 PROJECT_DIR="/opt/moroccan-legal-ai"
-GITHUB_REPO="https://github.com/YOUR_USERNAME/your_ai_lawyer.git"  # CHANGE THIS!
+GITHUB_REPO="https://github.com/ahmeddamouad/your_ai_lawyer.git"
 
 # Check if running as root
 if [ "$EUID" -eq 0 ]; then
@@ -44,7 +44,20 @@ echo -e "${YELLOW}Step 4: Creating project directory...${NC}"
 sudo mkdir -p $PROJECT_DIR
 sudo chown $USER:$USER $PROJECT_DIR
 
-echo -e "${YELLOW}Step 5: Checking disk space...${NC}"
+echo -e "${YELLOW}Step 5: Setting up 4GB swap space (critical for Ollama)...${NC}"
+if [ -f /swapfile ]; then
+    echo "Swap file already exists, skipping..."
+else
+    sudo fallocate -l 4G /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+    echo "Swap space created successfully"
+fi
+free -h
+
+echo -e "${YELLOW}Step 6: Checking disk space...${NC}"
 df -h /
 
 echo ""
